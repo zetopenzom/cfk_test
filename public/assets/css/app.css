@@ -1,0 +1,14 @@
+.toast {
+  min-width: 265px !important;
+}
+.kms-form .required::after {
+  content: " *";
+  color: red;
+}
+.v_middle {
+  vertical-align: middle !important;
+}
+.image_form .file {
+  visibility: hidden;
+  position: absolute;
+}
