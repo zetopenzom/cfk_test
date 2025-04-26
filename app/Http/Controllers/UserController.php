@@ -49,9 +49,14 @@ class UserController extends Controller
         $r = $request->role;
         $d = date("Y-m-d H:i:s");
 
-        DB::select("INSERT INTO users (name, password, email, role, remember_token, created_at, updated_at) VALUES ('$n', '$p', '$e', '$r', NULL, '$d', '$d')");
+        $check = DB::table("users")->where('email', $e)->get();
 
-        return to_route('users.index')->with('success', 'User has been added');;
+        if (count($check) == 0) {
+            DB::select("INSERT INTO users (name, password, email, role, remember_token, created_at, updated_at) VALUES ('$n', '$p', '$e', '$r', NULL, '$d', '$d')");
+            return to_route('users.index')->with('success', 'Pengguna telah ditambahkan');
+        } else {
+            return to_route('users.create')->with('fail', 'Email telah didaftarkan, mohon gunakan email lain');
+        }
     }
 
     public function edit(User $user)

@@ -8,10 +8,14 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="bg-white p-6 overflow-hidden shadow-sm sm:rounded-lg max-w-3xl">
+                <x-alert-success>{{ session('fail') }}</x-alert-success>
+                <x-link-button href="{{ route('notes.index') }}">
+                    < Kembali
+                </x-link-button>
                 <form action="{{ route('notes.store') }}" method="post">
                     @csrf
                     {{-- judul --}}
-                    <x-input-label for="title" :value="__('Judul')" />
+                    <x-input-label for="title" :value="__('Judul')" class="mt-6"/>
                     <x-text-input id="title" name="title" class="w-full" placeholder="Nama Lembur" value="{{ @old('title') }}"></x-text-input>
                     @error('title')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>

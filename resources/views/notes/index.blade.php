@@ -18,9 +18,7 @@
             <div class="bg-white p-6 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="flex gap-6">
                     <div>
-                        <h2 class="font-bold text-2xl text-indigo-600">
-                            <a href="{{ route('notes.show', $note) }}" class="hover:underline">{{ $note->title }}</a>
-                        </h2>
+                        <h2 class="font-bold text-2xl text-indigo-600">{{ $note->title }}</h2>
                         <p class="mt-2">Mulai : {{ date('d F Y H:i', strtotime($note->start_time)) }}</p>
                         <p class="mt-2">Selesai : {{ date('d F Y H:i', strtotime($note->end_time)) }}</p>
                         @php
@@ -30,6 +28,7 @@
                         @endphp
                         <p class="mt-2">Lembur selama {{ $jam }} jam {{ $menit }} menit</p>
                         <span class="block mt-4 text-sm opacity-70">{{ $note->updated_at->diffForHumans() }}</span>
+                        {{-- status --}}
                         @if ($note->status == 0)
                             <p class="mt-4 px-2 py-1 bg-yellow-100 border border-yellow-200 text-yellow-700 rounded-md">
                                 Lembur belum disetujui
@@ -45,9 +44,9 @@
                         @endif
                     </div>
                     <div class="ml-auto">
-                        {{-- button --}}
+                        <div><x-link-button href="{{ route('notes.show', $note) }}" class="ml-auto mt-4 bg-blue-500 hover:bg-blue-600 focus:bg-blue-600">Lihat</x-link-button></div>
+                        {{-- supervisor --}}
                         @if (Auth::user()->role == 'Supervisor')
-                            {{-- supervisor --}}
                             @if ($note->status == 0)
                                 <x-link-button href="{{ route('notes.edit', $note) }}" class="ml-auto mt-4">Edit</x-link-button>
                                 <form action="{{ route('notes.destroy', $note) }}" method="post" class=" mt-4">
@@ -56,8 +55,8 @@
                                     <x-primary-button class="bg-red-500 hover:bg-red-600 focus:bg-red-600" onclick="return confirm('Hapus {{ $note->title }}?')">Hapus</x-primary-button>
                                 </form>
                             @endif
+                        {{-- manajer --}}
                         @elseif (Auth::user()->role == 'Manajer')
-                            {{-- manajer --}}
                             @if ($note->status == 0)
                                 {{-- button setuju --}}
                                 <form action="{{ route('notes.update', $note, 1) }}" method="post" class=" mt-4">
@@ -80,11 +79,10 @@
                                 @method('put')
                                 @csrf
                                 <input type="hidden" name="status" value="0">
-                                <x-primary-button class="bg-yellow-500 hover:bg-yellow-600 focus:bg-yellow-600" onclick="return confirm('Batalkan {{ $note->title }}?')">Batalkan</x-primary-button>
+                                <x-primary-button class="bg-yellow-500 hover:bg-yellow-600 focus:bg-yellow-600" onclick="return confirm('Batalkan persetujuan {{ $note->title }}?')">Batalkan</x-primary-button>
                             </form>
                             @endif
                         @endif
-                            
                     </div>
                 </div>
             </div>

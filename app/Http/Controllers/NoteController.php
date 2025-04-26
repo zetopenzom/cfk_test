@@ -19,7 +19,6 @@ class NoteController extends Controller
             $notes = Note::paginate(5);
         }
 
-        // dd($notes);
         return view('notes.index')->with('notes', $notes);
     }
 
@@ -44,17 +43,18 @@ class NoteController extends Controller
             'end_time' => $request->end_time
         ]);
 
-        $note->save();
+        $unix = strtotime($request->end_time)-strtotime($request->start_time);
 
-        return to_route('notes.show', $note);
+        if ($unix > 0) {
+            $note->save();
+            return to_route('notes.index', $note);
+        } else {
+            return to_route('notes.create')->with('fail', 'Waktu Akhir Lembur tidak boleh sama/kurang dari Mulai Waktu Lembur');
+        }
     }
 
     public function show(Note $note)
     {
-        if ($note->user_id !== Auth::id()) {
-            abort(403);
-        }
-
         return view('notes.show', ['note' => $note]);
     }
 
@@ -97,10 +97,11 @@ class NoteController extends Controller
 
             if ($request->status == 1) {
                 $alert = $note->title . ' disetujui';
-            } else {
+            } elseif ($request->status == 2) {
                 $alert = $note->title . ' ditolak';
+            }  else {
+                $alert = $note->title . ' dibatalkan persetujuannya';
             }
-
             return to_route('notes.index', $note)->with('success', $alert);
         }
     }

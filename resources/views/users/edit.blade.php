@@ -8,11 +8,14 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="bg-white p-6 overflow-hidden shadow-sm sm:rounded-lg max-w-3xl">
+                <x-link-button href="{{ route('users.index') }}">
+                    < Kembali
+                </x-link-button>
                 <form action="{{ route('users.update', $user) }}" method="post">
                     @method('put')
                     @csrf
                     {{-- name --}}
-                    <x-input-label for="name" :value="__('Nama')" />
+                    <x-input-label for="name" :value="__('Nama')" class="mt-6" />
                     <x-text-input id="name" name="name" class="w-full" placeholder="Nama Pengguna" value="{{ @old('name', $user->name) }}"></x-text-input>
                     @error('name')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
