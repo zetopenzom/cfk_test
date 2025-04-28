@@ -22,16 +22,56 @@
                     @enderror
                     {{-- start time --}}
                     <x-input-label for="start_time" :value="__('Mulai Waktu Lembur')" class="mt-6" />
-                    <x-text-input id="start_time" name="start_time" class="w-full" value="{{ @old('start_time', $note->start_time) }}" type="datetime-local"></x-text-input>
+                    <x-text-input id="start_time" name="start_time" class="w-full" value="{{ @old('start_time', $note->start_time) }}" type="datetime-local" onchange="selisihLembur()"></x-text-input>
                     @error('start_time')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                     {{-- end time --}}
                     <x-input-label for="end_time" :value="__('Akhir Waktu Lembur')" class="mt-6" />
-                    <x-text-input id="end_time" name="end_time" class="w-full" value="{{ @old('end_time', $note->end_time) }}" type="datetime-local"></x-text-input>
+                    <x-text-input id="end_time" name="end_time" class="w-full" value="{{ @old('end_time', $note->end_time) }}" type="datetime-local" onchange="selisihLembur()"></x-text-input>
                     @error('end_time')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
+                    <div class="mt-5">
+                        <span>Jumlah Waktu Lembur : </span>
+                        @php
+                            $unix = strtotime($note->end_time)-strtotime($note->start_time);
+                            $jam = floor($unix / (60 * 60));
+                            $menit = ($unix/60) % 60 . " menit";
+                            if ($menit == "0 menit") {
+                                $menit = "";
+                            }
+                        @endphp
+                        <span id="totalLembur">{{ $jam }} jam {{ $menit }}</span>
+                    </div>
+                    
+                    <script>
+                        function selisihLembur() {
+                            let start = document.getElementById("start_time").value;
+                            let end = document.getElementById("end_time").value
+
+                            if (start != '' && end != '') {
+                                let start_unix = Math.floor(new Date(start).getTime() / 1000);
+                                let end_unix = Math.floor(new Date(end).getTime() / 1000);
+                                let diff = end_unix-start_unix;
+
+                                if (diff <= 0) {
+                                    alert('Waktu Akhir Lembur tidak boleh sama/kurang dari Mulai Waktu Lembur');
+                                    document.getElementById("start_time").value = "";
+                                    document.getElementById("end_time").value = "";
+                                    document.getElementById("totalLembur").innerHTML = "-";
+                                } else {
+                                    let jam = Math.floor(diff / (60 * 60));
+                                    let menit = ((diff/60) % 60) + ' menit';
+                                    if (menit == "0 menit") {
+                                        menit = "";
+                                    }
+
+                                    document.getElementById("totalLembur").innerHTML = jam + ' jam ' + menit;
+                                }
+                            }
+                        }
+                    </script>
                     {{-- button --}}
                     <x-primary-button class="mt-6">Simpan</x-primary-button>
                 </form>

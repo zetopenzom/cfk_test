@@ -6,7 +6,6 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('notes.index') }}">
-                        {{-- <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" /> --}}
                         <img src="/assets/brand/kep-crop-tr.png" style="max-width: 30px">
                     </a>
                 </div>

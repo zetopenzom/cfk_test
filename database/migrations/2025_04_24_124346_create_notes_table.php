@@ -15,9 +15,12 @@ return new class extends Migration
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
             $table->uuid();
-            $table->string('title');
-            $table->longText('text');
+            $table->tinyText('title');
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
+            $table->integer('status')->default('0');
             $table->foreignIdFor(User::class);
+            $table->integer('approval_id')->default('0');
             $table->timestamps();
         });
     }

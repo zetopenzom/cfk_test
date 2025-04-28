@@ -24,9 +24,12 @@
                         @php
                             $unix = strtotime($note->end_time)-strtotime($note->start_time);
                             $jam = floor($unix / (60 * 60));
-                            $menit = ($unix/60) % 60;
+                            $menit = ($unix/60) % 60 . " menit";
+                            if ($menit == "0 menit") {
+                                $menit = "";
+                            }
                         @endphp
-                        <p class="mt-2">Lembur selama {{ $jam }} jam {{ $menit }} menit</p>
+                        <p class="mt-2">Lembur selama {{ $jam }} jam {{ $menit }}</p>
                         <span class="block mt-4 text-sm opacity-70">{{ $note->updated_at->diffForHumans() }}</span>
                         {{-- status --}}
                         @if ($note->status == 0)

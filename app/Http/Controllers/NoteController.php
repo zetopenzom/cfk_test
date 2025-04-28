@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +44,7 @@ class NoteController extends Controller
             'end_time' => $request->end_time
         ]);
 
-        $unix = strtotime($request->end_time)-strtotime($request->start_time);
+        $unix = strtotime($request->end_time) - strtotime($request->start_time);
 
         if ($unix > 0) {
             $note->save();
@@ -55,7 +56,23 @@ class NoteController extends Controller
 
     public function show(Note $note)
     {
-        return view('notes.show', ['note' => $note]);
+        $spv_id = $note->user_id;
+        $spv = User::where('id', $spv_id)->get();
+        $manajer_id = $note->approval_id;
+        $manajer = User::where('id', $manajer_id)->get();
+
+        if (count($manajer) == 0) {
+            $manajer = "-";
+        } else {
+            $manajer = $manajer[0]->name;
+        }
+
+        if (count($spv) > 0) {
+            $spv = $spv[0]->name;
+            return view('notes.show', ['note' => $note, 'spv' => $spv, 'manajer' => $manajer]);
+        } else {
+            abort(403);
+        }
     }
 
     public function edit(Note $note)
@@ -88,28 +105,31 @@ class NoteController extends Controller
 
             return to_route('notes.index', $note)->with('success', 'Perubahan disimpan');
         } else {
-            $d = date("Y-m-d H:i:s");
+            $date = date("Y-m-d H:i:s");
+            $status = $request->status;
+            $id = Auth::id();
+
+            if ($status == 1) {
+                $alert = $note->title . ' disetujui';
+            } elseif ($status == 2) {
+                $alert = $note->title . ' ditolak';
+            } else {
+                $alert = $note->title . ' dibatalkan persetujuannya';
+                $id = 0;
+            }
 
             $note->update([
-                'status' => $request->status,
-                'updated_at' => $d
+                'status' => $status,
+                'approval_id' => $id,
+                'updated_at' => $date
             ]);
 
-            if ($request->status == 1) {
-                $alert = $note->title . ' disetujui';
-            } elseif ($request->status == 2) {
-                $alert = $note->title . ' ditolak';
-            }  else {
-                $alert = $note->title . ' dibatalkan persetujuannya';
-            }
             return to_route('notes.index', $note)->with('success', $alert);
         }
     }
 
     public function destroy(Note $note)
     {
-        // dd($note);
-
         if ($note->user_id !== Auth::id()) {
             abort(403);
         }
@@ -117,5 +137,14 @@ class NoteController extends Controller
         $note->delete();
 
         return to_route('notes.index')->with('success', 'Note deleted');
+    }
+
+    public function print(Note $note)
+    {
+        if ($note->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        return view('notes.edit', ['note' => $note]);
     }
 }
