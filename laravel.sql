@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 28 Apr 2025 pada 02.56
+-- Waktu pembuatan: 28 Apr 2025 pada 13.17
 -- Versi server: 8.3.0
 -- Versi PHP: 8.1.10
 
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `migrations` (
   `id` int UNSIGNED NOT NULL,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -52,7 +52,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 
 CREATE TABLE `notebooks` (
   `id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -66,24 +66,16 @@ CREATE TABLE `notebooks` (
 
 CREATE TABLE `notes` (
   `id` bigint UNSIGNED NOT NULL,
-  `uuid` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` tinytext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `start_time` datetime NOT NULL,
   `end_time` datetime NOT NULL,
   `status` int NOT NULL DEFAULT '0',
   `user_id` bigint UNSIGNED NOT NULL,
+  `approval_id` int DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data untuk tabel `notes`
---
-
-INSERT INTO `notes` (`id`, `uuid`, `title`, `start_time`, `end_time`, `status`, `user_id`, `created_at`, `updated_at`) VALUES
-(4, 'e8f06cb3-19ee-46a1-8b05-c153bb8fb43c', 'Lembur 4', '2020-02-02 20:33:00', '2025-04-02 00:00:00', 0, 5, '2025-04-25 08:55:59', '2025-04-26 00:33:22'),
-(5, '426e1fe5-f4e3-4788-aa78-7d34e0ceb28d', 'Lembur 5', '2020-02-12 22:34:00', '2025-04-02 00:00:00', 1, 5, '2025-04-25 09:06:00', '2025-04-26 00:33:18'),
-(6, '4efafcea-6217-4084-b7d6-6201089cbc87', 'Lembur 6', '2024-02-22 07:00:00', '2024-02-22 12:00:00', 2, 5, '2025-04-25 09:20:30', '2025-04-26 00:33:13');
 
 -- --------------------------------------------------------
 
@@ -92,8 +84,8 @@ INSERT INTO `notes` (`id`, `uuid`, `title`, `start_time`, `end_time`, `status`, 
 --
 
 CREATE TABLE `password_resets` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -105,11 +97,11 @@ CREATE TABLE `password_resets` (
 
 CREATE TABLE `personal_access_tokens` (
   `id` bigint UNSIGNED NOT NULL,
-  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tokenable_id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `abilities` text COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abilities` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -124,11 +116,11 @@ CREATE TABLE `personal_access_tokens` (
 
 CREATE TABLE `users` (
   `id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `role` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -138,9 +130,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `password`, `email`, `role`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '$2y$12$g0smQbXt6ixTCknBarRLVuVvHs.cgT0MMp9ZdXD8CVoBLFyODETXu', 'admin@admin.com', 'Admin', NULL, '2025-04-25 08:02:43', '2025-04-25 08:02:43'),
-(5, 'spv', '$2y$12$ULVKWZ9oJLfxaLo1INgzIeBTw3n51FS2Z/j1Y1TkhN5CnPHrlTVFS', 'spv@spv.com', 'Supervisor', NULL, '2025-04-25 10:20:06', '2025-04-25 10:20:06'),
-(6, 'manajer', '$2y$12$RB5rqnF73TOZM65YINZRBO30n.yGlR82rkywaN5fhVDNNXOM2Z/iy', 'manajer@manajer.com', 'Manajer', NULL, '2025-04-25 10:20:34', '2025-04-25 12:53:55');
+(1, 'admin', '$2y$12$g0smQbXt6ixTCknBarRLVuVvHs.cgT0MMp9ZdXD8CVoBLFyODETXu', 'admin@admin.com', 'Admin', NULL, '2025-04-25 08:02:43', '2025-04-25 08:02:43');
 
 --
 -- Indexes for dumped tables
@@ -204,7 +194,7 @@ ALTER TABLE `notebooks`
 -- AUTO_INCREMENT untuk tabel `notes`
 --
 ALTER TABLE `notes`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT untuk tabel `personal_access_tokens`
